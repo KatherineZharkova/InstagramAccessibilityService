@@ -1,4 +1,4 @@
-package com.example.instagramaccessibilityservice
+package com.key_key.instagramaccessibilityservice
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.instagramaccessibilityservice", appContext.packageName)
+        assertEquals("com.key_key.instagramaccessibilityservice", appContext.packageName)
     }
 }

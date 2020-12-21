@@ -1,4 +1,4 @@
-package com.example.instagramaccessibilityservice
+package com.key_key.instagramaccessibilityservice
 
 import org.junit.Test
 
