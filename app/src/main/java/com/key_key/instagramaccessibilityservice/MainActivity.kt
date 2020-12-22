@@ -7,23 +7,26 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val TAG = "InstagramAccessService"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initInstagramButton()
-        if (!checkAccess()) {
-            offerAccessibilitySettings()
-        }
+    }
 
+    private fun setUsername(name: String?) {
+        findViewById<TextView>(R.id.textView).text = name
+    }
+
+    private fun initInstagramButton() {
+        findViewById<Button>(R.id.instagram_btn)?.setOnClickListener {
+            if (!checkAccess()) offerAccessibilitySettings() else startInstagram()
+        }
     }
 
     private fun checkAccess(): Boolean {
@@ -32,11 +35,9 @@ class MainActivity : AppCompatActivity() {
             .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
         for (id in accessServicesList) {
             if (packageServiceName == id.id) {
-                Log.e(TAG, "InstagramAccessService has access")
                 return true
             }
         }
-        Log.e(TAG, "InstagramAccessService needs access")
         return false
     }
 
@@ -45,16 +46,8 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, 0)
     }
 
-    private fun initInstagramButton() {
-        findViewById<Button>(R.id.instagram_btn)?.setOnClickListener {
-            startInstagram()
-        }
-    }
-
     private fun startInstagram() {
-        InstagramLoader(this).load(getString(R.string.app_link))
+        InstagramLoader(this).start()
     }
-
-
 
 }

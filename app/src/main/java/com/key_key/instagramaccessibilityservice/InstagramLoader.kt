@@ -6,15 +6,15 @@ import android.net.Uri
 
 
 class InstagramLoader(private val activity: Activity) {
+    private val instagramPackage = activity.getString(R.string.instagram_package)
 
-    companion object {
-        const val INSTAGRAM_PACKAGE = "com.instagram.android"
+    fun start() {
+        with(activity){
+            packageManager.getLaunchIntentForPackage(instagramPackage)?.apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(this)
+            }
+        }
     }
 
-    fun load(link: String) {
-        activity.startActivity(
-            Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                .setPackage(INSTAGRAM_PACKAGE)
-        )
-    }
 }
