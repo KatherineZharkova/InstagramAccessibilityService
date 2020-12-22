@@ -3,7 +3,5 @@
     <string name="service_label">This service only looks up your Instagram UserName</string>
     <string name="start_instagram">Find out</string>
     <string name="welcome_text">What\'s your Instagram username?</string>
-    <string name="web_link">http://instagram.com/moya_planeta</string>
-    <string name="app_link">http://instagram.com/_u/moya_planeta</string>
     <string name="instagram_package">com.instagram.android</string>
 </resources>

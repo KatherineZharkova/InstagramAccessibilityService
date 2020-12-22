@@ -2,11 +2,10 @@ package com.key_key.instagramaccessibilityservice
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import com.key_key.instagramaccessibilityservice.room.RoomEntity
 import java.io.InterruptedIOException
-
 
 const val TAG = "InstagramAccessService"
 
@@ -17,13 +16,11 @@ class InstagramAccessService : AccessibilityService() {
         private const val PROFILE_TAB_ID = "com.instagram.android:id/profile_tab"
         private const val ACTION_BAR_TITLE_ID = "com.instagram.android:id/action_bar_large_title"
     }
-    
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        event?.run {
-            source?.let {
-                it.refresh()
-                fetchUsernameAlgorithm(it)
-            }
+        event?.source?.let {
+            it.refresh()
+            fetchUsernameAlgorithm(it)
         }
     }
 
@@ -46,7 +43,10 @@ class InstagramAccessService : AccessibilityService() {
     }
 
     private fun saveUsername() {
-        Log.d(TAG, userName)
+        IasApp.instance.iasDataBase.run {
+            entityDao.insert(RoomEntity(userName))
+            notifyObservers()
+        }
     }
 
 
