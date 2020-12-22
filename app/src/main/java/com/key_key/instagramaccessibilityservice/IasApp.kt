@@ -23,5 +23,4 @@ class IasApp : Application() {
             .build()
     }
 
-
 }

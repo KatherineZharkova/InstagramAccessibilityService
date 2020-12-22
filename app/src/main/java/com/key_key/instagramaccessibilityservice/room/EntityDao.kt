@@ -18,4 +18,6 @@ interface EntityDao {
     fun update(entity: RoomEntity)
 
     @Delete
-    fun delete(entity: RoomEntity)}
+    fun delete(entity: RoomEntity)
+
+}

@@ -15,20 +15,20 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initButton()
+        presenter.onCreate()
     }
 
     override fun setText(name: String) {
         findViewById<TextView>(R.id.textView).text = name
     }
 
-    private fun initButton() {
+    override fun initButton() {
         findViewById<Button>(R.id.instagram_btn)?.setOnClickListener {
             presenter.onBtnClick()
         }
     }
 
-    override fun offerAccessibilitySettings() {
+    override fun openAccessibilitySettings() {
         startActivityForResult(
             Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),
             0

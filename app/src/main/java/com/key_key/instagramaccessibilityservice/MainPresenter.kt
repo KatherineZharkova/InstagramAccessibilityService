@@ -1,6 +1,5 @@
 package com.key_key.instagramaccessibilityservice
 
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import androidx.appcompat.app.AppCompatActivity
@@ -8,34 +7,37 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainPresenter (private val view: MainView) : Observer {
     private val app = IasApp.instance
+    private val database = app.iasDataBase
 
-    private fun getNameFromDb() : String {
-        val result = app.iasDataBase.entityDao.getUserName().userName
-        Log.e(TAG, "Presenter got $result")
-        return result
+    fun onCreate() {
+        startAccess()
+        view.initButton()
+        setText()    // gets data from DB if available
     }
 
-    private fun setText() {
-        view.setText(getNameFromDb())
-    }
-
-    fun onBtnClick() {
-        app.iasDataBase.addObserver(this)
-        if (!checkAccess()) view.offerAccessibilitySettings() else startInstagram()
+    private fun startAccess() {
+        if (!this.checkAccess())  {
+            view.openAccessibilitySettings()
+        }
     }
 
     private fun checkAccess(): Boolean {
         with(app) {
-            val packageServiceName = "$packageName/.InstagramAccessService"
+            val servicePackageName = app.getString(R.string.service_package_name, packageName)
             val accessServicesList = (getSystemService(AppCompatActivity.ACCESSIBILITY_SERVICE) as AccessibilityManager)
                 .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
-            for (id in accessServicesList) {
-                if (packageServiceName == id.id) {
+            for (service in accessServicesList) {
+                if (servicePackageName == service.id) {
                     return true
                 }
             }
         }
         return false
+    }
+
+    fun onBtnClick() {
+        database.addObserver(this)
+        startInstagram()
     }
 
     private fun startInstagram() {
@@ -44,7 +46,16 @@ class MainPresenter (private val view: MainView) : Observer {
 
     override fun update() {
         setText()
-        app.iasDataBase.removeObserver(this)
+        database.removeObserver(this)
     }
+
+    private fun setText() {
+        if (getNameFromDb().isNullOrBlank()) return
+        val text = app.getString(R.string.got_username, getNameFromDb())
+        view.setText(text)
+    }
+
+    private fun getNameFromDb() =
+        database.entityDao?.getUserName()?.userName
 
 }

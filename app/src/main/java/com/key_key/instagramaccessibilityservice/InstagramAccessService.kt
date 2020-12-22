@@ -7,30 +7,33 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.key_key.instagramaccessibilityservice.room.RoomEntity
 import java.io.InterruptedIOException
 
-const val TAG = "InstagramAccessService"
 
 class InstagramAccessService : AccessibilityService() {
     private var userName: String = ""
     companion object {
+        private const val TAG = "InstagramAccessService"
         private const val INSTAGRAM_PACKAGE = "com.instagram.android"
         private const val PROFILE_TAB_ID = "com.instagram.android:id/profile_tab"
         private const val ACTION_BAR_TITLE_ID = "com.instagram.android:id/action_bar_large_title"
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        event?.source?.let {
-            it.refresh()
-            fetchUsernameAlgorithm(it)
+        event?.source?.run {
+            refresh()
+            fetchUsernameAlgorithm(this)
         }
     }
 
     private fun fetchUsernameAlgorithm(nodeInfo: AccessibilityNodeInfo) {
         nodeInfo.findAccessibilityNodeInfosByViewId(PROFILE_TAB_ID).apply {
-            if (size <= 0) return
-
-            get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            userName = nodeInfo.findAccessibilityNodeInfosByViewId(ACTION_BAR_TITLE_ID)[0]
+            try {
+                get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                userName = nodeInfo.findAccessibilityNodeInfosByViewId(ACTION_BAR_TITLE_ID)[0]
                     .text.trim().toString()
+            } catch (e: IndexOutOfBoundsException) {
+                e.printStackTrace()
+                return
+            }
         }
 
         saveUsername()
@@ -38,17 +41,15 @@ class InstagramAccessService : AccessibilityService() {
     }
 
     private fun finishFetching() {
-        disableSelf()
-        performBackClick(2)
+        performBackClick(2)     // back to app screen
     }
 
     private fun saveUsername() {
         IasApp.instance.iasDataBase.run {
-            entityDao.insert(RoomEntity(userName))
+            entityDao?.insert(RoomEntity(userName))
             notifyObservers()
         }
     }
-
 
     override fun onInterrupt() {
         throw InterruptedIOException("$TAG interrupted")
