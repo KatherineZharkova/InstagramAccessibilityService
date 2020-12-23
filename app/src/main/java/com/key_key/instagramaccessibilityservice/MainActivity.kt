@@ -3,27 +3,26 @@ package com.key_key.instagramaccessibilityservice
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.key_key.instagramaccessibilityservice.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity(), MainView {
-
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val presenter = MainPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         presenter.onCreate()
     }
 
     override fun setText(name: String) {
-        findViewById<TextView>(R.id.textView).text = name
+        binding.textView.text = name
     }
 
     override fun initButton() {
-        findViewById<Button>(R.id.instagram_btn)?.setOnClickListener {
+        binding.instagramBtn.setOnClickListener {
             presenter.onBtnClick()
         }
     }
