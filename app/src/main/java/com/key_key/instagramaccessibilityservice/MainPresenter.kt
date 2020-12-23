@@ -10,9 +10,9 @@ class MainPresenter (private val view: MainView) : Observer {
     private val database = app.iasDataBase
 
     fun onCreate() {
-        startAccess()
+        startAccess() // opens accessibility settings right on start
         view.initButton()
-        setText()    // gets data from DB if available
+        setText()    // sets available username from DB
     }
 
     private fun startAccess() {

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Instagram Accessibility Service</string>
-    <string name="service_label">This service only looks up your Instagram UserName</string>
+    <string name="service_label">Instagram Accessibility Service</string>
+    <string name="service_description">This service only looks up your Instagram UserName</string>
     <string name="start_instagram">Find out</string>
     <string name="welcome_text">What\'s your Instagram username?</string>
     <string name="got_username">You are logged in as\n%1$s</string>
