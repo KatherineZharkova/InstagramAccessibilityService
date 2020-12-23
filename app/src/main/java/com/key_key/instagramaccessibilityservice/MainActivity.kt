@@ -3,51 +3,35 @@ package com.key_key.instagramaccessibilityservice
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityManager
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.key_key.instagramaccessibilityservice.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val presenter = MainPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        initInstagramButton()
+        setContentView(binding.root)
+        presenter.onCreate()
     }
 
-    private fun setUsername(name: String?) {
-        findViewById<TextView>(R.id.textView).text = name
+    override fun setText(name: String) {
+        binding.textView.text = name
     }
 
-    private fun initInstagramButton() {
-        findViewById<Button>(R.id.instagram_btn)?.setOnClickListener {
-            if (!checkAccess()) offerAccessibilitySettings() else startInstagram()
+    override fun initButton() {
+        binding.instagramBtn.setOnClickListener {
+            presenter.onBtnClick()
         }
     }
 
-    private fun checkAccess(): Boolean {
-        val packageServiceName = "$packageName/.InstagramAccessService"
-        val accessServicesList = (getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager)
-            .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
-        for (id in accessServicesList) {
-            if (packageServiceName == id.id) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun offerAccessibilitySettings() {
-        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-        startActivityForResult(intent, 0)
-    }
-
-    private fun startInstagram() {
-        InstagramLoader(this).start()
+    override fun openAccessibilitySettings() {
+        startActivityForResult(
+            Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),
+            0
+        )
     }
 
 }
