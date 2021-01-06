@@ -2,6 +2,7 @@ package com.key_key.instagramaccessibilityservice
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -44,11 +45,21 @@ class InstagramAccessService : AccessibilityService() {
 
     private fun finishFetching() {
         saveUsername()
-        performDoubleBackClick()
+        backToApp()
+        userName = ""
+    }
+
+    private fun backToApp() {
+        startActivity(
+                Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+        )
     }
 
     private fun saveUsername() {
-        Log.e("TAG", userName)
+        Log.e(TAG, userName)
         IasApp.instance.iasDataBase.run {
             entityDao?.insert(RoomEntity(userName))
             notifyObservers()
@@ -62,7 +73,7 @@ class InstagramAccessService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         setServiceInfo()
-        performDoubleBackClick()
+        backToApp()
     }
 
     private fun setServiceInfo() {
@@ -73,13 +84,6 @@ class InstagramAccessService : AccessibilityService() {
             eventTypes = AccessibilityEvent.TYPES_ALL_MASK
             feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             packageNames = listOf(INSTAGRAM_PACKAGE).toTypedArray()
-        }
-    }
-
-    private fun performDoubleBackClick() {
-        for (i in 0..1) {
-            Thread.sleep(100)
-            performGlobalAction(GLOBAL_ACTION_BACK)
         }
     }
 
