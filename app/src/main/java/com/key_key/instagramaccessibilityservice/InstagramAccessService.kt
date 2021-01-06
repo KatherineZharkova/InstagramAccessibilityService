@@ -46,6 +46,7 @@ class InstagramAccessService : AccessibilityService() {
     private fun finishFetching() {
         saveUsername()
         backToApp()
+        userName = ""
     }
 
     private fun backToApp() {
