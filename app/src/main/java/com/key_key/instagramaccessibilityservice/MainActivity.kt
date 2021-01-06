@@ -28,10 +28,7 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun openAccessibilitySettings() {
-        startActivityForResult(
-            Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),
-            0
-        )
+        startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
     }
 
 }
